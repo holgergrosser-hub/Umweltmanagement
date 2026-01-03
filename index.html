@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Umweltmanagement - Online-Unterweisung | QM-Guru Akademie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://qm-guru-akademie.netlify.app/styles.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #38A169;
+            --primary-dark: #276749;
+            --primary-light: #9AE6B4;
+            --primary-bg: #F0FFF4;
+        }
+        
+        .category-badge {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .progress-bar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .progress-track {
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .module {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .module.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .highlight-box {
+            background: var(--primary-bg);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight-box.warning {
+            background: #FFFAF0;
+            border-left-color: #ED8936;
+        }
+        
+        .highlight-box.info {
+            background: #EBF8FF;
+            border-left-color: #4299E1;
+        }
+        
+        .icon-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .icon-list li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+        
+        .icon-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .toc {
+            display: grid;
+            gap: 0.75rem;
+        }
+        
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #F7FAFC;
+            border-radius: 8px;
+        }
+        
+        .toc-number {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .quiz-question {
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-question h3 {
+            margin-bottom: 1rem;
+            color: #2D3748;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+        
+        .quiz-option {
+            padding: 1rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quiz-option:hover {
+            border-color: var(--primary-light);
+            background: var(--primary-bg);
+        }
+        
+        .quiz-option.selected {
+            border-color: var(--primary);
+            background: var(--primary-bg);
+        }
+        
+        .quiz-option.correct {
+            border-color: #38A169;
+            background: #F0FFF4;
+        }
+        
+        .quiz-option.incorrect {
+            border-color: #E53E3E;
+            background: #FFF5F5;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 3rem;
+        }
+        
+        .result-score {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .result-passed {
+            color: #38A169;
+        }
+        
+        .result-failed {
+            color: #E53E3E;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #E2E8F0;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        
+        .btn-secondary {
+            background: #E2E8F0;
+            color: #4A5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #CBD5E0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2D3748;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .pdca-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .pdca-item {
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .pdca-item.plan { background: #EBF8FF; border-left: 4px solid #4299E1; }
+        .pdca-item.do { background: #F0FFF4; border-left: 4px solid #38A169; }
+        .pdca-item.check { background: #FFFAF0; border-left: 4px solid #ED8936; }
+        .pdca-item.act { background: #FAF5FF; border-left: 4px solid #9F7AEA; }
+        
+        .pdca-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pdca-item p {
+            font-size: 0.9rem;
+            color: #4A5568;
+            margin: 0;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .comparison-box {
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .comparison-box.direct {
+            background: #F0FFF4;
+            border: 1px solid #9AE6B4;
+        }
+        
+        .comparison-box.indirect {
+            background: #EBF8FF;
+            border: 1px solid #90CDF4;
+        }
+        
+        @media (max-width: 768px) {
+            .pdca-grid, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span class="category-badge">🌿 Umweltmanagement</span>
+            <span id="progressText">Modul 1 von 14</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <main class="container" style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+        
+        <!-- Modul 0: Registrierung -->
+        <div class="module active" id="module0">
+            <h1>🌿 Umweltmanagement</h1>
+            <p class="subtitle">Online-Unterweisung nach ISO 14001:2015</p>
+            
+            <div class="highlight-box">
+                <h3>📋 Schulungsinhalt</h3>
+                <div class="toc">
+                    <div class="toc-item"><span class="toc-number">1</span> ISO 14001:2015 – Einführung</div>
+                    <div class="toc-item"><span class="toc-number">2</span> Ziele des Umweltmanagements</div>
+                    <div class="toc-item"><span class="toc-number">3</span> Der PDCA-Zyklus</div>
+                    <div class="toc-item"><span class="toc-number">4</span> Vorteile der ISO 14001</div>
+                    <div class="toc-item"><span class="toc-number">5</span> Umweltaspekte verstehen</div>
+                    <div class="toc-item"><span class="toc-number">6</span> Direkte und indirekte Umweltaspekte</div>
+                    <div class="toc-item"><span class="toc-number">7</span> Bewertung von Umweltaspekten</div>
+                    <div class="toc-item"><span class="toc-number">8</span> Risiken und Chancen</div>
+                    <div class="toc-item"><span class="toc-number">9</span> Umweltziele & SMART</div>
+                    <div class="toc-item"><span class="toc-number">10</span> Umweltkennzahlen</div>
+                    <div class="toc-item"><span class="toc-number">11</span> Interessierte Parteien</div>
+                    <div class="toc-item"><span class="toc-number">12</span> Bindende Verpflichtungen</div>
+                    <div class="toc-item"><span class="toc-number">13</span> Dokumentation</div>
+                    <div class="toc-item"><span class="toc-number">14</span> Konsequenzen bei Verstößen</div>
+                </div>
+            </div>
+            
+            <div class="highlight-box info">
+                <p><strong>⏱️ Dauer:</strong> ca. 25-35 Minuten</p>
+                <p><strong>📝 Abschluss:</strong> 10 Fragen, Bestehen ab 70% (7 richtig)</p>
+                <p><strong>🎓 Zertifikat:</strong> Bei erfolgreichem Abschluss per E-Mail</p>
+            </div>
+            
+            <h3>Ihre Daten für das Zertifikat</h3>
+            <div class="form-group">
+                <label for="vorname">Vorname *</label>
+                <input type="text" id="vorname" required>
+            </div>
+            <div class="form-group">
+                <label for="nachname">Nachname *</label>
+                <input type="text" id="nachname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">E-Mail-Adresse *</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="firma">Firma (optional)</label>
+                <input type="text" id="firma">
+            </div>
+            
+            <button class="btn btn-primary" onclick="startCourse()" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                🚀 Schulung starten
+            </button>
+        </div>
+
+        <!-- Modul 1: ISO 14001 Einführung -->
+        <div class="module" id="module1">
+            <h2>1. ISO 14001:2015 – Einführung</h2>
+            
+            <div class="highlight-box">
+                <h3>🌍 Was ist ISO 14001?</h3>
+                <p>Die ISO 14001 ist die international anerkannte Norm für <strong>Umweltmanagementsysteme (UMS)</strong>. Sie definiert das Umweltmanagementsystem als Teil des gesamten Unternehmens.</p>
+            </div>
+            
+            <p>Dieser Teilbereich des Managementsystems beschäftigt sich mit den <strong>betrieblichen Umweltbelangen</strong> und hilft Organisationen dabei:</p>
+            
+            <ul class="icon-list">
+                <li>Umweltauswirkungen systematisch zu erfassen</li>
+                <li>Umweltleistung kontinuierlich zu verbessern</li>
+                <li>Rechtliche Anforderungen einzuhalten</li>
+                <li>Ressourcen effizienter zu nutzen</li>
+            </ul>
+            
+            <div class="highlight-box info">
+                <h4>💡 Gut zu wissen</h4>
+                <p>Die ISO 14001 ist <strong>gut kombinierbar</strong> mit bereits bestehenden Managementsystemen wie ISO 9001 (Qualität) oder ISO 45001 (Arbeitsschutz). Die gemeinsame High-Level-Structure macht die Integration einfach.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 2: Ziele des Umweltmanagements -->
+        <div class="module" id="module2">
+            <h2>2. Ziele des Umweltmanagements</h2>
+            
+            <div class="highlight-box">
+                <h3>🎯 Das Hauptziel</h3>
+                <p style="font-size: 1.2rem; text-align: center; margin: 1rem 0;">
+                    <strong>Reduzierung der Umweltauswirkungen</strong><br>
+                    der Produkte oder Dienstleistungen
+                </p>
+            </div>
+            
+            <h3>Was gehört zum Umweltmanagement?</h3>
+            
+            <ul class="icon-list">
+                <li><strong>Die Umweltpolitik</strong> – Grundsätze und Verpflichtungen der Leitung</li>
+                <li><strong>Der Umweltschutz</strong> – Maßnahmen zur Vermeidung von Umweltschäden</li>
+                <li><strong>Die Umweltleistung</strong> – Messbare Ergebnisse wie Emissionen, Abwasser, Bodenverunreinigungen</li>
+                <li><strong>Die Einhaltung behördlicher Auflagen</strong> – Gesetzliche Grenzwerte und Vorschriften</li>
+            </ul>
+            
+            <div class="highlight-box">
+                <h4>🏆 Vorteile für alle Beteiligten</h4>
+                <p>Wer Energie und Ressourcen spart, gewinnt <strong>finanziell und ideell</strong>:</p>
+                <ul class="icon-list">
+                    <li>Sichere Arbeitsplätze</li>
+                    <li>Ein angenehmes Arbeitsumfeld</li>
+                    <li>Kosteneinsparungen</li>
+                    <li>Verbesserter Marktzugang</li>
+                </ul>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 3: PDCA-Zyklus -->
+        <div class="module" id="module3">
+            <h2>3. Der PDCA-Zyklus</h2>
+            
+            <p>Das Umweltmanagement folgt dem bewährten <strong>PDCA-Zyklus</strong> (Plan-Do-Check-Act) für kontinuierliche Verbesserung:</p>
+            
+            <div class="pdca-grid">
+                <div class="pdca-item plan">
+                    <h4>📋 PLAN – Planung</h4>
+                    <p>Ist-Analyse durchführen, Ziele setzen, Maßnahmen planen</p>
+                </div>
+                <div class="pdca-item do">
+                    <h4>⚙️ DO – Umsetzung</h4>
+                    <p>Geplante Maßnahmen im Betrieb umsetzen</p>
+                </div>
+                <div class="pdca-item check">
+                    <h4>🔍 CHECK – Überprüfung</h4>
+                    <p>Zielvorgaben kontrollieren, Leistung bewerten</p>
+                </div>
+                <div class="pdca-item act">
+                    <h4>🔄 ACT – Verbesserung</h4>
+                    <p>Anpassung auf Basis der Ergebnisse</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>🔁 Kontinuierliche Verbesserung</h4>
+                <p>Der PDCA-Zyklus wird immer wieder durchlaufen. So verbessert sich das Umweltmanagement <strong>Schritt für Schritt</strong> – ohne große Umwälzungen, aber mit messbaren Fortschritten.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 4: Vorteile der ISO 14001 -->
+        <div class="module" id="module4">
+            <h2>4. Vorteile der ISO 14001</h2>
+            
+            <p>Ein zertifiziertes Umweltmanagementsystem nach ISO 14001 bietet zahlreiche Vorteile:</p>
+            
+            <div class="highlight-box">
+                <h4>🌍 International anerkannt</h4>
+                <ul class="icon-list">
+                    <li>Weltweit anerkanntes Umweltmanagementsystem</li>
+                    <li>Integration des Umweltmanagements in die Geschäftsprozesse</li>
+                    <li>Bessere Marktchancen bei umweltbewussten Kunden</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>💰 Wirtschaftliche Vorteile</h4>
+                <ul class="icon-list">
+                    <li><strong>Gesteigerte Ressourceneffizienz</strong></li>
+                    <li>Geringere Verbrauchs- und Umweltkosten</li>
+                    <li>Reduktion der Umweltrisiken für Ihr Unternehmen</li>
+                    <li>Vermeidung von Bußgeldern und Strafen</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>📈 Kontinuierliche Umsetzung</h4>
+                <p>Die ISO 14001 sorgt für die <strong>kontinuierliche Umsetzung der erforderlichen Umweltschutzmaßnahmen</strong> – systematisch und nachweisbar.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 5: Umweltaspekte verstehen -->
+        <div class="module" id="module5">
+            <h2>5. Umweltaspekte verstehen</h2>
+            
+            <div class="highlight-box">
+                <h3>🔍 Definition: Umweltaspekt</h3>
+                <p style="font-size: 1.1rem; font-style: italic;">
+                    "Bestandteil einer Organisation, der Auswirkungen auf die Umwelt hat oder haben kann."
+                </p>
+            </div>
+            
+            <p>Umweltaspekte können <strong>positive oder negative Auswirkungen</strong> auf die Umwelt hervorrufen. Typische Umweltaspekte sind:</p>
+            
+            <ul class="icon-list">
+                <li>Energieverbrauch (Strom, Gas, Heizung)</li>
+                <li>Wasserverbrauch und Abwasser</li>
+                <li>Abfall und Entsorgung</li>
+                <li>Emissionen (Luft, Lärm)</li>
+                <li>Gefahrstoffe und deren Lagerung</li>
+            </ul>
+            
+            <div class="highlight-box info">
+                <h4>💡 Lebensweg-Betrachtung</h4>
+                <p>Um Umweltaspekte zu ermitteln, betrachten wir den gesamten <strong>Lebensweg des Produktes/der Dienstleistung</strong>:</p>
+                <p style="text-align: center; margin: 1rem 0; font-weight: 500;">
+                    Rohstoffgewinnung → Beschaffung → Produktion → Verpackung → Lagerung → Transport → Entsorgung
+                </p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 6: Direkte und indirekte Umweltaspekte -->
+        <div class="module" id="module6">
+            <h2>6. Direkte und indirekte Umweltaspekte</h2>
+            
+            <div class="comparison-grid">
+                <div class="comparison-box direct">
+                    <h4>🎯 Direkte Umweltaspekte</h4>
+                    <p>Betreffen Tätigkeiten, deren Ablauf die Organisation <strong>vollständig beeinflussen und kontrollieren</strong> kann.</p>
+                    <p><strong>Beispiele:</strong></p>
+                    <ul>
+                        <li>Ein- und Ableitungen in Gewässer</li>
+                        <li>Eigener Energieverbrauch</li>
+                        <li>Abfall aus der Produktion</li>
+                        <li>Emissionen aus eigenen Anlagen</li>
+                    </ul>
+                </div>
+                <div class="comparison-box indirect">
+                    <h4>🔗 Indirekte Umweltaspekte</h4>
+                    <p>Betreffen die Organisation nur <strong>mittelbar</strong>, ohne vollständige Kontrolle darüber.</p>
+                    <p><strong>Beispiele:</strong></p>
+                    <ul>
+                        <li>Umweltleistung von Lieferanten</li>
+                        <li>Verhalten von Auftragnehmern</li>
+                        <li>Transport durch Dritte</li>
+                        <li>Nutzung der Produkte beim Kunden</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>📋 Wie beeinflusst man indirekte Umweltaspekte?</h4>
+                <p>Indirekte Umweltaspekte können über <strong>Verträge oder Auswahlverfahren</strong> (Lieferantenbeurteilung) beeinflusst werden. Anforderungen an Umweltleistung können Teil der Einkaufskriterien sein.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 7: Bewertung von Umweltaspekten -->
+        <div class="module" id="module7">
+            <h2>7. Bewertung von Umweltaspekten</h2>
+            
+            <p>Um die <strong>bedeutenden Umweltaspekte</strong> zu ermitteln, müssen die Aspekte nach verschiedenen Kriterien bewertet werden:</p>
+            
+            <div class="highlight-box">
+                <h4>📊 Bewertungskriterien</h4>
+                <ul class="icon-list">
+                    <li><strong>Umweltschaden im Normalfall</strong> – Wie groß ist die Auswirkung im normalen Betrieb?</li>
+                    <li><strong>Umweltschaden im Not- oder Störfall</strong> – Was passiert bei Unfällen oder Störungen?</li>
+                    <li><strong>Beeinflussbarkeit</strong> – Wie gut können wir den Aspekt kontrollieren?</li>
+                </ul>
+            </div>
+            
+            <h3>Wie ermittelt man Umweltaspekte?</h3>
+            
+            <ul class="icon-list">
+                <li><strong>Begehungen</strong> in den verschiedenen Arbeitsbereichen</li>
+                <li><strong>Betrachtung des Lebenswegs</strong> des Produktes/der Dienstleistung</li>
+                <li>Auswertung von Verbrauchsdaten (Strom, Wasser, Material)</li>
+                <li>Gespräche mit Mitarbeitern vor Ort</li>
+            </ul>
+            
+            <div class="highlight-box info">
+                <h4>💡 Praxistipp</h4>
+                <p>Fragen Sie sich: <em>"Was ist der wichtigste Umweltaspekt in meinem Arbeitsbereich? Wie wurde er ermittelt?"</em></p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 8: Risiken und Chancen -->
+        <div class="module" id="module8">
+            <h2>8. Risiken und Chancen</h2>
+            
+            <p>Aus den Umweltaspekten ergeben sich <strong>Risiken und Chancen</strong> für das Unternehmen:</p>
+            
+            <div class="comparison-grid">
+                <div class="comparison-box" style="background: #FFF5F5; border-color: #FC8181;">
+                    <h4>⚠️ Risiken</h4>
+                    <ul>
+                        <li>Umweltverschmutzung</li>
+                        <li>Bußgelder und Strafen</li>
+                        <li>Imageschäden</li>
+                        <li>Haftungsrisiken</li>
+                        <li>Ressourcenknappheit</li>
+                    </ul>
+                </div>
+                <div class="comparison-box" style="background: #F0FFF4; border-color: #68D391;">
+                    <h4>💡 Chancen</h4>
+                    <ul>
+                        <li>Kosteneinsparungen</li>
+                        <li>Besseres Image</li>
+                        <li>Neue Märkte</li>
+                        <li>Innovation</li>
+                        <li>Wettbewerbsvorteile</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>🔄 Verschiedene Ansätze</h4>
+                <p>Risiken und Chancen können aus verschiedenen Blickwinkeln betrachtet werden:</p>
+                <ul class="icon-list">
+                    <li>Aus dem <strong>bedeutenden Umweltaspekt</strong> (z.B. hoher Energieverbrauch)</li>
+                    <li>Aus der <strong>Betrachtung der Bereiche</strong> (Produktion, Einkauf, Logistik usw.)</li>
+                </ul>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 9: Umweltziele & SMART -->
+        <div class="module" id="module9">
+            <h2>9. Umweltziele & SMART</h2>
+            
+            <div class="highlight-box">
+                <h3>🎯 Allgemeine Umweltziele</h3>
+                <ul class="icon-list">
+                    <li>Kontinuierliche Verbesserung des betrieblichen Umweltschutzes</li>
+                    <li>Ökologische und ökonomische Schwachstellen beseitigen</li>
+                    <li>Material, Energie und damit Kosten einsparen</li>
+                </ul>
+            </div>
+            
+            <h3>Konkrete Umweltziele (Beispiele)</h3>
+            <ul class="icon-list">
+                <li>Gefahrstoffe am Arbeitsplatz reduzieren</li>
+                <li>Keine Arbeitsunfälle mit Gefahrstoffen</li>
+                <li>Stromverbrauch reduzieren</li>
+                <li>Wasserverbrauch reduzieren</li>
+                <li>Umwelt schützen</li>
+            </ul>
+            
+            <div class="highlight-box info">
+                <h4>📐 Die SMART-Regel für Ziele</h4>
+                <p>Umweltziele sollten SMART formuliert sein:</p>
+                <ul>
+                    <li><strong>S</strong> – Spezifisch (eindeutig)</li>
+                    <li><strong>M</strong> – Messbar</li>
+                    <li><strong>A</strong> – Angemessen</li>
+                    <li><strong>R</strong> – Realistisch</li>
+                    <li><strong>T</strong> – Terminiert</li>
+                </ul>
+                <p><em>Beispiel: "Stromverbrauch um 10% bis Ende 2025 reduzieren"</em></p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 10: Umweltkennzahlen -->
+        <div class="module" id="module10">
+            <h2>10. Umweltkennzahlen</h2>
+            
+            <p>Um Umweltziele zu steuern und zu bewerten, brauchen wir <strong>Umweltkennzahlen</strong>:</p>
+            
+            <div class="highlight-box">
+                <h4>📊 Wichtige Fragen zu Kennzahlen</h4>
+                <ul class="icon-list">
+                    <li>Welche Umweltkennzahlen werden bereits ermittelt/erfasst?</li>
+                    <li>Welche Kennzahlen brauchen wir, damit die Ziele bewertet werden können?</li>
+                    <li>Welche Kennzahlen helfen bei der Steuerung der bedeutenden Umweltaspekte?</li>
+                </ul>
+            </div>
+            
+            <h3>Umweltverbesserungen = Kostensenkungen</h3>
+            
+            <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                <thead>
+                    <tr style="background: var(--primary-bg);">
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #E2E8F0;">Ziel</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #E2E8F0;">Umwelt</th>
+                        <th style="padding: 0.75rem; text-align: left; border: 1px solid #E2E8F0;">Kosten</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Einsparung von Strom</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Reduzierung von Emissionen</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Verringerung der Stromkosten</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Recycling von Verpackungen</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Material im Kreislauf</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Reduzierung Entsorgungskosten</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">PV-Anlage nutzen</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Erzeugung von "grünem" Strom</td>
+                        <td style="padding: 0.75rem; border: 1px solid #E2E8F0;">Erhöhung der Vergütung</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 11: Interessierte Parteien -->
+        <div class="module" id="module11">
+            <h2>11. Interessierte Parteien</h2>
+            
+            <p>Im Umweltmanagement müssen die <strong>Anforderungen interessierter Parteien</strong> berücksichtigt werden:</p>
+            
+            <div class="highlight-box">
+                <h4>👥 Wer sind interessierte Parteien?</h4>
+                <ul class="icon-list">
+                    <li><strong>Geschäftsführung/Leitung</strong> – Will z.B. Energieoptimierung oder erneuerbare Energien</li>
+                    <li><strong>Mitarbeiter</strong> – Wollen evtl. ein "grünes Unternehmen"</li>
+                    <li><strong>Kunden</strong> – Fordern evtl. eine Zertifizierung nach ISO 14001</li>
+                    <li><strong>Behörden</strong> – Stellen Anforderungen durch Gesetze und Auflagen</li>
+                    <li><strong>Nachbarn/Anwohner</strong> – Haben Interesse an geringen Emissionen</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box info">
+                <h4>💡 Wichtig</h4>
+                <p>Alle interessierten Parteien – <strong>Kunden, Mitarbeiter und Geschäftsführung</strong> – sollten bei der Planung und Umsetzung des Umweltmanagements berücksichtigt werden.</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 12: Bindende Verpflichtungen -->
+        <div class="module" id="module12">
+            <h2>12. Bindende Verpflichtungen</h2>
+            
+            <p>Bindende Verpflichtungen sind <strong>rechtliche und andere Anforderungen</strong>, die das Unternehmen einhalten muss:</p>
+            
+            <div class="highlight-box">
+                <h4>📋 Quellen für bindende Verpflichtungen</h4>
+                <ul class="icon-list">
+                    <li>Auflagen aus <strong>Baugenehmigungen/Umbaumaßnahmen</strong></li>
+                    <li><strong>Produktionstechnische Anforderungen</strong> (Lärm, Abluft)</li>
+                    <li><strong>Umgebung</strong> (z.B. Landschaftsschutzgebiet nebenan)</li>
+                    <li><strong>Standort</strong> (Gewerbegebiet, Mischgebiet, Wohngebiet)</li>
+                    <li><strong>Umweltaspekte</strong> (welche Gesetze/Normen sind relevant?)</li>
+                    <li><strong>Anforderungen der interessierten Parteien</strong></li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box warning">
+                <h4>⚠️ Achtung</h4>
+                <p>Es muss geprüft werden, <strong>welche umweltrelevanten Vorgaben</strong> Sie betreffen und <strong>welcher Abschnitt</strong> im jeweiligen Gesetz gilt. Eine regelmäßige Überprüfung ist erforderlich!</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 13: Dokumentation -->
+        <div class="module" id="module13">
+            <h2>13. Dokumentation</h2>
+            
+            <p>Ein Umweltmanagementsystem erfordert <strong>dokumentierte Informationen</strong>:</p>
+            
+            <div class="highlight-box">
+                <h4>📁 Typische Dokumente im UMS</h4>
+                <ul class="icon-list">
+                    <li>Umweltaspekte und deren Bewertung</li>
+                    <li>Risiken- und Chancenanalyse</li>
+                    <li>Umweltkennzahlen (Verbrauch)</li>
+                    <li>Umweltziele und -programm</li>
+                    <li>Liste der Normen und Gesetze</li>
+                    <li>Entsorgungsleitfaden</li>
+                    <li>Wartungspläne / Prüfpflichtige Anlagen</li>
+                    <li>Managementreview</li>
+                    <li>Schulungsnachweise</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box info">
+                <h4>📝 Integration ins Handbuch</h4>
+                <p>Die Umweltaspekte sollten in die <strong>Prozessbeschreibungen</strong> integriert werden, z.B.:</p>
+                <ul>
+                    <li>Bei <strong>Wartung</strong>: Entsorgung der Altmaterialien, Öl usw.</li>
+                    <li>Bei <strong>Beschaffung</strong>: Regionale Lieferanten, Pendelverpackung, Gefahrstoffe</li>
+                    <li>Bei <strong>Entwicklung</strong>: Auswahl der Materialien, Energieverbrauch</li>
+                </ul>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Weiter →</button>
+            </div>
+        </div>
+
+        <!-- Modul 14: Konsequenzen -->
+        <div class="module" id="module14">
+            <h2>14. Konsequenzen bei Verstößen</h2>
+            
+            <p>Was kann passieren, wenn Umweltvorschriften nicht eingehalten werden?</p>
+            
+            <div class="highlight-box warning">
+                <h4>⚠️ Mögliche Konsequenzen</h4>
+                <ul class="icon-list">
+                    <li><strong>Bewusste und unbewusste Umweltverschmutzung</strong></li>
+                    <li><strong>Verletzung der Arbeitssicherheitsvorschriften</strong></li>
+                    <li><strong>Gefährdung der Gesundheit</strong> von Mitarbeitern und Anwohnern</li>
+                    <li><strong>Drohende Strafen und Bußgelder</strong></li>
+                    <li>Imageschäden und Kundenverlust</li>
+                    <li>Haftungsansprüche</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box">
+                <h4>✅ Ihr Beitrag zählt!</h4>
+                <p>Jeder Mitarbeiter kann zum Umweltschutz beitragen:</p>
+                <ul class="icon-list">
+                    <li>Ressourcen bewusst nutzen (Strom, Wasser, Material)</li>
+                    <li>Abfall richtig trennen</li>
+                    <li>Umweltprobleme melden</li>
+                    <li>Verbesserungsvorschläge einbringen</li>
+                </ul>
+            </div>
+            
+            <div class="highlight-box" style="text-align: center; background: var(--primary-bg);">
+                <h3>🎓 Geschafft!</h3>
+                <p>Sie haben alle Lernmodule abgeschlossen. Jetzt folgt der <strong>Abschlusstest</strong> mit 10 Fragen.</p>
+                <p>Bestehen ab 70% (7 von 10 richtig)</p>
+            </div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevModule()">← Zurück</button>
+                <button class="btn btn-primary" onclick="nextModule()">Zum Abschlusstest →</button>
+            </div>
+        </div>
+
+        <!-- Modul 15: Quiz -->
+        <div class="module" id="module15">
+            <h2>📝 Abschlusstest</h2>
+            <p>Beantworten Sie die folgenden 10 Fragen. Sie benötigen mindestens 7 richtige Antworten (70%) zum Bestehen.</p>
+            
+            <div class="quiz-question" data-correct="c">
+                <h3>Frage 1: Was ist das Ziel des Umweltmanagements?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Erhöhung der Umweltrisiken</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Steigerung des Energieverbrauchs</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Reduzierung der Umweltauswirkungen der Produkte oder Dienstleistungen</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Erhöhung der Abfallproduktion</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="b">
+                <h3>Frage 2: Welchen Vorteil bietet die ISO 14001?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Erhöhung der Umweltrisiken</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Geringere Verbrauchs- und Umweltkosten</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Steigerung des Energieverbrauchs</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Erhöhung der Abfallproduktion</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="b">
+                <h3>Frage 3: Wie können Unternehmen den wichtigsten Umweltaspekt ermitteln?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Durch Recherche im Internet</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Durch Begehungen in den verschiedenen Arbeitsbereichen und Betrachtung des Lebenswegs</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Durch Auswahl von Lieferanten</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Durch Wettervorhersagen</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="a">
+                <h3>Frage 4: Was ist ein direkter Umweltaspekt?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Ein- und Ableitungen in Gewässer</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Umweltleistung von Auftragnehmern und Lieferanten</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Transport durch externe Spediteure</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Nutzung der Produkte beim Kunden</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="b">
+                <h3>Frage 5: Was ist das Ziel eines Umweltmanagementsystems (UMS)?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Die Anzahl der Mitarbeiter zu verdoppeln</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Kontinuierliche Verbesserung des betrieblichen Umweltschutzes</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Den Umsatz zu maximieren</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Die Produktion zu automatisieren</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="a">
+                <h3>Frage 6: Welche Maßnahme gehört zur Planungsphase im Umweltmanagement?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Rechtsanalyse durchführen</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Notfallplan abschaffen</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Verantwortlichkeiten ignorieren</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Umweltschutzmaßnahmen reduzieren</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="b">
+                <h3>Frage 7: Wie können Unternehmen indirekte Umweltaspekte beeinflussen?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Durch Wetteränderungen</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Über Verträge oder Auswahlverfahren (Lieferantenbeurteilung)</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Durch Änderung der Regierungspolitik</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Mittels direkter Kontrolle über alle Prozesse</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="b">
+                <h3>Frage 8: Was ist ein Vorteil der ISO 14001 Zertifizierung?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Erhöhte Produktionsfehlerquote</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Gesteigerte Ressourceneffizienz</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Verminderter Kundenservice</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Höhere Abfallproduktion</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="d">
+                <h3>Frage 9: Wer sind interessierte Parteien im Kontext des Umweltmanagements?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Nur die Geschäftsführung</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Nur die Kunden</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Nur die Mitarbeiter</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Kunden, Mitarbeiter und Geschäftsführung</div>
+                </div>
+            </div>
+            
+            <div class="quiz-question" data-correct="c">
+                <h3>Frage 10: Was beschreibt der PDCA-Zyklus?</h3>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="a">Eine einmalige Projektdurchführung</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="b">Die Struktur eines Organigramms</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="c">Einen kontinuierlichen Verbesserungsprozess (Plan-Do-Check-Act)</div>
+                    <div class="quiz-option" onclick="selectOption(this)" data-value="d">Die Hierarchie im Unternehmen</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" onclick="submitQuiz()" style="width: 100%; padding: 1rem; font-size: 1.1rem; margin-top: 1rem;">
+                ✓ Test auswerten
+            </button>
+        </div>
+
+        <!-- Modul 16: Ergebnis -->
+        <div class="module" id="module16">
+            <div class="result-container">
+                <div id="resultIcon" style="font-size: 5rem;">🎓</div>
+                <h2 id="resultTitle">Ergebnis</h2>
+                <div id="resultScore" class="result-score">0/10</div>
+                <p id="resultText"></p>
+                
+                <div id="resultActions" style="margin-top: 2rem;">
+                    <!-- Buttons werden dynamisch eingefügt -->
+                </div>
+            </div>
+            
+            <div id="quizReview" style="margin-top: 2rem;">
+                <!-- Auswertung wird hier eingefügt -->
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: #718096; border-top: 1px solid #E2E8F0; margin-top: 2rem;">
+        <p>© 2025 QM-Dienstleistungen | Holger Grosser | <a href="https://qm-guru.de" style="color: var(--primary);">qm-guru.de</a></p>
+        <p style="font-size: 0.85rem;">Erstellt: QM Elfe · Freigabe: QM Guru</p>
+    </footer>
+
+    <script>
+        let currentModule = 0;
+        let userData = {};
+        let quizAnswers = {};
+        const totalModules = 16;
+        const totalLearningModules = 14;
+
+        function updateProgress() {
+            const progress = currentModule === 0 ? 0 : (currentModule / totalModules) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            if (currentModule === 0) {
+                document.getElementById('progressText').textContent = 'Registrierung';
+            } else if (currentModule <= totalLearningModules) {
+                document.getElementById('progressText').textContent = `Modul ${currentModule} von ${totalLearningModules}`;
+            } else if (currentModule === 15) {
+                document.getElementById('progressText').textContent = 'Abschlusstest';
+            } else {
+                document.getElementById('progressText').textContent = 'Ergebnis';
+            }
+        }
+
+        function showModule(index) {
+            document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+            document.getElementById('module' + index).classList.add('active');
+            currentModule = index;
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function startCourse() {
+            const vorname = document.getElementById('vorname').value.trim();
+            const nachname = document.getElementById('nachname').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const firma = document.getElementById('firma').value.trim();
+
+            if (!vorname || !nachname || !email) {
+                alert('Bitte füllen Sie alle Pflichtfelder aus.');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                alert('Bitte geben Sie eine gültige E-Mail-Adresse ein.');
+                return;
+            }
+
+            userData = {
+                name: vorname + ' ' + nachname,
+                email: email,
+                firma: firma
+            };
+
+            showModule(1);
+        }
+
+        function nextModule() {
+            if (currentModule < totalModules) {
+                showModule(currentModule + 1);
+            }
+        }
+
+        function prevModule() {
+            if (currentModule > 0) {
+                showModule(currentModule - 1);
+            }
+        }
+
+        function selectOption(element) {
+            const question = element.closest('.quiz-question');
+            question.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            const questionIndex = Array.from(document.querySelectorAll('.quiz-question')).indexOf(question);
+            quizAnswers[questionIndex] = element.dataset.value;
+        }
+
+        function submitQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            let allAnswered = true;
+
+            questions.forEach((q, index) => {
+                if (!quizAnswers[index]) {
+                    allAnswered = false;
+                }
+            });
+
+            if (!allAnswered) {
+                alert('Bitte beantworten Sie alle Fragen.');
+                return;
+            }
+
+            questions.forEach((q, index) => {
+                const correct = q.dataset.correct;
+                const selected = quizAnswers[index];
+                
+                q.querySelectorAll('.quiz-option').forEach(opt => {
+                    if (opt.dataset.value === correct) {
+                        opt.classList.add('correct');
+                    } else if (opt.dataset.value === selected && selected !== correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                if (selected === correct) {
+                    score++;
+                }
+            });
+
+            showResult(score, questions.length);
+        }
+
+        function showResult(score, total) {
+            const passed = score >= 7;
+            const percentage = Math.round((score / total) * 100);
+
+            document.getElementById('resultIcon').textContent = passed ? '🎓' : '😔';
+            document.getElementById('resultTitle').textContent = passed ? 'Herzlichen Glückwunsch!' : 'Leider nicht bestanden';
+            document.getElementById('resultScore').textContent = score + '/' + total;
+            document.getElementById('resultScore').className = 'result-score ' + (passed ? 'result-passed' : 'result-failed');
+            document.getElementById('resultText').textContent = passed 
+                ? `Sie haben ${percentage}% erreicht und die Unterweisung erfolgreich abgeschlossen!`
+                : `Sie haben ${percentage}% erreicht. Zum Bestehen sind 70% (7 richtige Antworten) erforderlich.`;
+
+            let actionsHTML = '';
+            if (passed) {
+                actionsHTML = `
+                    <button class="btn btn-primary" onclick="downloadCertificate(${score}, ${total})" style="padding: 1rem 2rem;">
+                        📄 Zertifikat herunterladen
+                    </button>
+                    <p style="margin-top: 1rem; color: #718096;">Das Zertifikat wird auch per E-Mail an ${userData.email} gesendet.</p>
+                `;
+            } else {
+                actionsHTML = `
+                    <button class="btn btn-primary" onclick="retryQuiz()" style="padding: 1rem 2rem; margin-right: 1rem;">
+                        🔄 Test wiederholen
+                    </button>
+                    <button class="btn btn-secondary" onclick="showModule(1)" style="padding: 1rem 2rem;">
+                        📚 Schulung wiederholen
+                    </button>
+                `;
+            }
+            document.getElementById('resultActions').innerHTML = actionsHTML;
+
+            showModule(16);
+
+            if (passed) {
+                sendCertificateRequest(score, total, percentage);
+            }
+        }
+
+        function retryQuiz() {
+            quizAnswers = {};
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            showModule(15);
+        }
+
+        // Zertifikat per Google Apps Script versenden
+        const WEBAPP_URL = 'WEBAPP_URL_HIER_EINTRAGEN';
+
+        function sendCertificateRequest(score, total, percentage) {
+            const data = {
+                name: userData.name,
+                email: userData.email,
+                firma: userData.firma || '',
+                score: score,
+                totalQuestions: total,
+                percentage: percentage,
+                answers: Object.values(quizAnswers),
+                timestamp: new Date().toISOString()
+            };
+
+            if (WEBAPP_URL === 'WEBAPP_URL_HIER_EINTRAGEN') {
+                console.log('WebApp URL nicht konfiguriert. Zertifikat-Daten:', data);
+                return;
+            }
+
+            fetch(WEBAPP_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                console.log('Zertifikat-Anfrage gesendet');
+            })
+            .catch(error => {
+                console.error('Fehler beim Senden:', error);
+            });
+        }
+
+        function downloadCertificate(score, total) {
+            alert(`Ihr Zertifikat wird an ${userData.email} gesendet.\n\nName: ${userData.name}\nErgebnis: ${score}/${total} (${Math.round(score/total*100)}%)`);
+        }
+
+        // Initial
+        updateProgress();
+    </script>
+</body>
+</html>
