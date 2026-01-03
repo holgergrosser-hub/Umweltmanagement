@@ -304,6 +304,23 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <header style="background: white; border-bottom: 1px solid #E2E8F0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 45px; height: 45px; background: #2B6CB0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-weight: 700; font-size: 1.1rem;">QM</span>
+            </div>
+            <div>
+                <div style="font-weight: 600; color: #2D3748;">QM-Guru</div>
+                <div style="font-size: 0.85rem; color: #718096;">Online Akademie</div>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <a href="https://qm-guru-akademie.netlify.app" style="color: #4A5568; text-decoration: none; font-size: 0.95rem;">← Zur Akademie</a>
+            <a href="https://onlinecert.info" target="_blank" style="background: #DD6B20; color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.9rem;">🎓 onlinecert.info</a>
+        </div>
+    </header>
+
     <div class="progress-bar">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <span class="category-badge">🌿 Umweltmanagement</span>
@@ -1183,7 +1200,7 @@
         }
 
         // Zertifikat per Google Apps Script versenden
-        const WEBAPP_URL = 'WEBAPP_URL_HIER_EINTRAGEN';
+        const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwXr0NC5IjSmLDwDerNwZ_MDcT1nU_p-k9fJzOAswrMhrAhxiD2NUMqfZuSh7L6q7XiwA/exec';
 
         function sendCertificateRequest(score, total, percentage) {
             const data = {
